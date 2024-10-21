@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Upload</title>
+  <script>
+    // Function to submit the form as soon as the file is chosen
+    function autoUpload() {
+      document.getElementById('uploadForm').submit();  // Automatically submit the form
+    }
+
+    // Fetch the list of uploaded files and display them
+    async function fetchFiles() {
+      const response = await fetch('/files');
+      const files = await response.json();
+      const fileList = document.getElementById('file-list');
+      fileList.innerHTML = '';  // Clear existing list
+
+      // Display each file as a download link
+      files.forEach(file => {
+        const fileLink = document.createElement('a');
+        fileLink.href = `/download/${file}`;
+        fileLink.innerText = file;
+        fileLink.download = file;
+
+        const listItem = document.createElement('li');
+        listItem.appendChild(fileLink);
+        fileList.appendChild(listItem);
+      });
+    }
+
+    // Fetch files when the page loads
+    window.onload = fetchFiles;
+  </script>
+</head>
+<body>
+  <h1>Upload a File</h1>
+  <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" required onchange="autoUpload()" />
+  </form>
+
+  <h2>Uploaded Files</h2>
+  <ul id="file-list">
+    <!-- File list will be dynamically loaded here -->
+  </ul>
+</body>
+</html>
